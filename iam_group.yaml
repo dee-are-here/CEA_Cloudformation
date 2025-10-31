@@ -1,0 +1,37 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: "IAM Group, Policy, and Role for CEA CloudFormation Stack"
+
+Resources:
+# IAM Group for Testers
+  MyIamGroup:
+    Type: 'AWS::IAM::Group'
+    Properties:
+      GroupName: 'TestersGroup'
+      Path: /testers/
+      ManagedPolicyArns:
+        - 'arn:aws:aim:aws:policy/ReadOnlyAccess'
+      Policies:
+          - PolicyName: 'S3AccessPolicy'
+
+  # IAM Role for EC2 Instances
+  MyEc2Role:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - ec2.amazonaws.com
+            Action:
+              - 'sts:AssumeRole'
+      Description: 'Policy for EC2 instances to access S3'
+      ManagedPolicyArns: 
+        - 'arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess'
+      MaxSessionDuration: Integer
+      Path: '/testers/'
+      RoleName: 'EC2S3AccessRole'
+        
+
+            
